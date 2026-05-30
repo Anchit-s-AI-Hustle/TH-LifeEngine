@@ -24,19 +24,17 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel (if secrets available)
-        if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_PROJECT_ID != '' && secrets.VERCEL_ORG_ID != '' }}
         uses: vercel/actions/deploy@v5
+        with:
+          token: ${{ secrets.VERCEL_TOKEN }}
+          project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          org-id: ${{ secrets.VERCEL_ORG_ID }}
+      
+      - name: Hint when secrets missing
+        uses: vercel/actions/deploy@v5        
         with:
           token: ${{ secrets.VERCEL_TOKEN }}
           project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           org-id: ${{ secrets.VERCEL_ORG_ID }}
           working-directory: ./
           production: true
-
-      - name: Hint when secrets missing
-        if: ${{ !(secrets.VERCEL_TOKEN != '' && secrets.VERCEL_PROJECT_ID != '' && secrets.VERCEL_ORG_ID != '' ) }}
-        run: |
-          echo "Vercel secrets not set in GitHub. To enable auto-deploy, add the following secrets:"
-          echo "- VERCEL_TOKEN"
-          echo "- VERCEL_PROJECT_ID"
-          echo "- VERCEL_ORG_ID"
